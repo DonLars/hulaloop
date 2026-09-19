@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ-Dashboard · Songwünsche</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dashboard">
+  <header class="dash-header">
+    <h1>🎧 Songwünsche</h1>
+    <div class="status">
+      <span id="conn-dot" class="dot"></span>
+      <span id="conn-text">verbinde…</span>
+      <button id="sound-toggle">🔔 Ton an</button>
+    </div>
+  </header>
+
+  <ul id="wish-list" class="wish-list"></ul>
+  <p id="empty" class="hint hidden">Noch keine Songwünsche eingegangen.</p>
+
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>
