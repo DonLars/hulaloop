@@ -1,11 +1,13 @@
 :root {
-  --bg: #0f1117;
-  --card: #1a1d29;
-  --accent: #ff5da2;
-  --text: #f2f2f7;
-  --muted: #9a9aad;
-  --ok: #3ddc84;
-  --err: #ff5c5c;
+  /* Gäste-Formular: an bevetech.de angelehnt (kräftiges Gelb, weiße Karten, Disco-Verlauf) */
+  --bg: #f6c934;
+  --card: #ffffff;
+  --accent: #ff3d77;
+  --accent-grad: linear-gradient(135deg, #ff3d77 0%, #ff7a3d 55%, #ffc23d 100%);
+  --text: #211d12;
+  --muted: #756c4e;
+  --ok: #1f9d55;
+  --err: #c8352f;
 }
 
 * { box-sizing: border-box; }
@@ -21,29 +23,56 @@ body {
   padding: 24px 16px;
 }
 
+.wrapper { max-width: 420px; width: 100%; }
+
+.hero {
+  background: var(--accent-grad);
+  border-radius: 18px 18px 0 0;
+  padding: 30px 24px 44px;
+  text-align: center;
+  color: #fff;
+}
+
+.hero .logo { font-size: 2.2rem; }
+
+.hero h1 {
+  margin: 6px 0 0;
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+.hero p {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
 .card {
   background: var(--card);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 28px 24px;
-  max-width: 420px;
-  width: 100%;
+  margin-top: -28px;
+  box-shadow: 0 12px 30px rgba(30, 20, 0, 0.18);
 }
 
 h1 { margin: 0 0 8px; font-size: 1.6rem; }
 
 .hint {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   line-height: 1.4;
+  background: #fdf3d6;
+  border-radius: 10px;
+  padding: 10px 12px;
 }
 
-form { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+form { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
 
-label { font-size: 0.85rem; color: var(--muted); margin-top: 10px; }
+label { font-size: 0.85rem; color: var(--muted); margin-top: 12px; font-weight: 600; }
 
 input, textarea {
-  background: #262838;
-  border: 1px solid #363850;
+  background: #faf6e8;
+  border: 1px solid #e7dcb3;
   border-radius: 10px;
   padding: 12px;
   color: var(--text);
@@ -58,15 +87,16 @@ input:focus, textarea:focus {
 }
 
 button {
-  margin-top: 18px;
-  background: var(--accent);
-  color: #1a1d29;
+  margin-top: 20px;
+  background: var(--accent-grad);
+  color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 999px;
   padding: 14px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  width: 100%;
 }
 
 button:active { transform: scale(0.98); }
@@ -78,8 +108,8 @@ button:active { transform: scale(0.98); }
   font-size: 0.95rem;
 }
 
-.success { background: rgba(61, 220, 132, 0.15); color: var(--ok); }
-.error { background: rgba(255, 92, 92, 0.15); color: var(--err); }
+.success { background: rgba(31, 157, 85, 0.12); color: var(--ok); }
+.error { background: rgba(200, 53, 47, 0.1); color: var(--err); }
 
 .success button {
   display: block;
@@ -87,15 +117,28 @@ button:active { transform: scale(0.98); }
   background: transparent;
   border: 1px solid var(--ok);
   color: var(--ok);
+  border-radius: 10px;
 }
 
 .hidden { display: none !important; }
 
-/* Dashboard */
+/* Dashboard: dunkles Theme fürs abgedunkelte DJ-Pult, bewusst nicht im Gelb-Look */
 body.dashboard {
+  --bg: #0f1117;
+  --card: #1a1d29;
+  --accent: #ff5da2;
+  --text: #f2f2f7;
+  --muted: #9a9aad;
+  --ok: #3ddc84;
+  --err: #ff5c5c;
   display: block;
   max-width: 720px;
   margin: 0 auto;
+}
+
+body.dashboard .hint {
+  background: transparent;
+  padding: 0;
 }
 
 .dash-header {
@@ -120,9 +163,11 @@ body.dashboard {
   margin: 0;
   padding: 6px 12px;
   font-size: 0.85rem;
+  border-radius: 999px;
   background: #262838;
   color: var(--text);
   border: 1px solid #363850;
+  width: auto;
 }
 
 .wish-list {
