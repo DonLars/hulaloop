@@ -74,16 +74,26 @@ nur die Netzwerk-Infrastruktur drumherum.
 
 ### Phase 1 (Start): ein einzelner WLAN-Router
 
-Für den Einstieg reicht ein einzelner Reise-Router mit eigener Firmware
-(z.B. GL.iNet Mango, GL-MT300N-V2, ~30-45 €), der DHCP, DNS-Hijack und WLAN
-in einem Gerät übernimmt, der Windows-PC braucht dafür keinen eigenen
-DHCP-Server. Bei einem Partyraum von ca. 50-80 m² deckt ein einzelner,
-zentral platzierter Access Point die Fläche über 2,4 GHz ab, auch die
-kleinste/günstigste GL.iNet-Variante reicht dafür aus (siehe
+Für den Einstieg reicht ein einzelner Reise-Router mit eigener Firmware, der
+DHCP, DNS-Hijack und WLAN in einem Gerät übernimmt, der Windows-PC braucht
+dafür keinen eigenen DHCP-Server.
+
+**Empfehlung: GL.iNet AR300M Shadow (~35-38 €), externe Antenne.** Bei
+einem Partyraum von ca. 50-80 m², zusätzlich gedämpft durch eine
+Menschenmenge (Körper schlucken 2,4-GHz-Signal teilweise), macht die
+externe Antenne einen spürbaren Unterschied: Die gesetzlich erlaubte
+Sendeleistung (20 dBm / 100 mW) ist bei allen kleinen GL.iNet-Routern
+gleich, aber eine externe Antenne strahlt effizienter ab als die winzigen
+internen Antennen kompakterer Modelle, das bringt real mehr Reichweite bei
+identischer Sendeleistung. Bonus: die externe Antenne lässt sich bei Bedarf
+gegen eine höhere Gain-Antenne tauschen.
+
+Alternative Modelle: GL.iNet Mango (GL-MT300N-V2, ~30-45 €, noch kompakter,
+aber nur interne Antennen, für die Raumgröße eher an der unteren Grenze)
+oder GL.iNet Beryl AX (GL-MT3000, ~87-110 €, mehr Leistungsreserve, aber
+deutlich größer). Siehe
 [Phase 2](#phase-2-skalierung-mehrere-access-points) für größere/verwinkelte
-Flächen oder deutlich mehr Gäste). Alternative Modelle: GL.iNet AR300M
-Shadow (ähnlich klein, zusätzlich 2 Ethernet-Ports) oder GL.iNet Beryl AX
-(GL-MT3000, ~87-110 €, mehr Leistungsreserve, aber deutlich größer).
+Flächen oder deutlich mehr Gäste.
 
 1. DJ-PC per Ethernet-Kabel an einen **LAN-Port** des Routers anschließen
    (nicht den WAN-Port, es gibt keinen Internet-Uplink).
