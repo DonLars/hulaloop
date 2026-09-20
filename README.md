@@ -21,6 +21,42 @@ anderen Port über die Umgebungsvariable `PORT` setzen, z.B. `PORT=8080 npm star
 Alle eingereichten Wünsche werden in `server/data/wishes.json` gespeichert
 und bleiben über einen Neustart hinweg erhalten.
 
+## Lokal testen (macOS)
+
+Die App ist plattformunabhängig (Node.js, Express, reines HTML/CSS/JS),
+`npm install && npm start` läuft auf dem Mac genauso wie auf dem
+Windows-Produktiv-PC. Ein Unterschied: macOS verlangt für Port 80
+Admin-Rechte, für reines Testen daher einen höheren Port nutzen:
+
+```bash
+PORT=8080 npm start
+```
+
+Formular dann unter `http://<mac-ip>:8080/`, Dashboard unter
+`http://<mac-ip>:8080/dashboard`. Für den echten Party-Einsatz auf dem
+Windows-PC bleibt Port 80 wie oben beschrieben.
+
+**Captive-Portal-Verhalten mit vorhandener FRITZ!Box testen:** Das
+Gastnetzwerk der FRITZ!Box lässt keinen eigenen DNS-Server zu (sie verteilt
+immer sich selbst als DNS-Server). Der Wildcard-DNS-Hijack-Trick
+funktioniert daher nur über das **reguläre WLAN** der FRITZ!Box, nicht über
+das isolierte Gastnetz:
+
+1. FRITZ!Box vom Internet trennen (WAN-Kabel raus), Mac per LAN-Kabel
+   anschließen, feste IP vergeben.
+2. Normales WLAN (nicht Gastnetz) nutzen, unter *Heimnetz → Netzwerk →
+   Netzwerkeinstellungen → IPv4-Adressen* den lokalen DNS-Server auf die IP
+   des Macs setzen.
+3. Auf dem Mac ein dnsmasq-artiges Tool mit der Wildcard-Zeile aus
+   [`network-setup/dnsmasq-phase1-single-router.conf`](network-setup/dnsmasq-phase1-single-router.conf)
+   laufen lassen.
+4. Node-Server wie oben starten.
+
+Das nutzt das normale Heimnetz statt eines isolierten Gastnetzes (unkritisch
+für einen reinen Funktionstest). Ohne DNS-Hijack-Setup lässt sich die App
+auch einfach testen, indem man die lokale IP des Macs manuell im
+Handy-Browser aufruft, nur der automatische Popup-Effekt bleibt dann aus.
+
 ## Netzwerk-Architektur (Offline-Party-WLAN)
 
 Der DJ-PC läuft komplett offline, es gibt keinen Internet-Uplink am
@@ -39,8 +75,15 @@ nur die Netzwerk-Infrastruktur drumherum.
 ### Phase 1 (Start): ein einzelner WLAN-Router
 
 Für den Einstieg reicht ein einzelner Reise-Router mit eigener Firmware
-(z.B. GL.iNet Beryl AX, GL-MT3000), der DHCP, DNS-Hijack und WLAN in einem
-Gerät übernimmt, der Windows-PC braucht dafür keinen eigenen DHCP-Server.
+(z.B. GL.iNet Mango, GL-MT300N-V2, ~30-45 €), der DHCP, DNS-Hijack und WLAN
+in einem Gerät übernimmt, der Windows-PC braucht dafür keinen eigenen
+DHCP-Server. Bei einem Partyraum von ca. 50-80 m² deckt ein einzelner,
+zentral platzierter Access Point die Fläche über 2,4 GHz ab, auch die
+kleinste/günstigste GL.iNet-Variante reicht dafür aus (siehe
+[Phase 2](#phase-2-skalierung-mehrere-access-points) für größere/verwinkelte
+Flächen oder deutlich mehr Gäste). Alternative Modelle: GL.iNet AR300M
+Shadow (ähnlich klein, zusätzlich 2 Ethernet-Ports) oder GL.iNet Beryl AX
+(GL-MT3000, ~87-110 €, mehr Leistungsreserve, aber deutlich größer).
 
 1. DJ-PC per Ethernet-Kabel an einen **LAN-Port** des Routers anschließen
    (nicht den WAN-Port, es gibt keinen Internet-Uplink).
