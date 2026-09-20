@@ -78,15 +78,20 @@ Für den Einstieg reicht ein einzelner Reise-Router mit eigener Firmware, der
 DHCP, DNS-Hijack und WLAN in einem Gerät übernimmt, der Windows-PC braucht
 dafür keinen eigenen DHCP-Server.
 
-**Empfehlung: GL.iNet AR300M Shadow (~35-38 €), externe Antenne.** Bei
-einem Partyraum von ca. 50-80 m², zusätzlich gedämpft durch eine
-Menschenmenge (Körper schlucken 2,4-GHz-Signal teilweise), macht die
-externe Antenne einen spürbaren Unterschied: Die gesetzlich erlaubte
-Sendeleistung (20 dBm / 100 mW) ist bei allen kleinen GL.iNet-Routern
-gleich, aber eine externe Antenne strahlt effizienter ab als die winzigen
-internen Antennen kompakterer Modelle, das bringt real mehr Reichweite bei
-identischer Sendeleistung. Bonus: die externe Antenne lässt sich bei Bedarf
-gegen eine höhere Gain-Antenne tauschen.
+**Empfehlung: GL.iNet AR300M Shadow, konkret die Variante GL-AR300M16-Ext
+(~35-38 €)** mit zwei abnehmbaren RP-SMA-Antennen. Wichtig beim Bestellen:
+GL.iNet verkauft "Shadow" in mehreren Varianten, nur die "-Ext"-Variante hat
+die externen, abnehmbaren Antennen. Bei einem Partyraum von ca. 50-80 m²,
+zusätzlich gedämpft durch eine Menschenmenge (Körper schlucken
+2,4-GHz-Signal teilweise), macht das einen spürbaren Unterschied: Die
+gesetzlich erlaubte Sendeleistung (20 dBm / 100 mW) ist bei allen kleinen
+GL.iNet-Routern gleich, aber eine externe Antenne strahlt effizienter ab
+als die winzigen internen Antennen kompakterer Modelle, das bringt real
+mehr Reichweite bei identischer Sendeleistung. Bonus: die Antennen lassen
+sich bei Bedarf gegen höhere Gain-Varianten tauschen. Zusätzlich bestätigt
+die offizielle [OpenWrt Table of Hardware](https://toh.openwrt.org/) für
+den GL-AR300M16(-Ext) durchgängigen, aktuellen Mainline-Support (21.02.0
+bis heute), also aktive Community-Pflege statt nur Hersteller-Fork.
 
 Alternative Modelle: GL.iNet Mango (GL-MT300N-V2, ~30-45 €, noch kompakter,
 aber nur interne Antennen, für die Raumgröße eher an der unteren Grenze)
