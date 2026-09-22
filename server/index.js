@@ -105,6 +105,16 @@ function moodScore(wish) {
 }
 const catalog = loadJson(SONGS_FILE, []);
 
+// Jeder darf seinen eigenen Namen jederzeit ändern, aber zwei Gäste dürfen
+// nicht gleichzeitig denselben Namen tragen (sonst lässt sich z.B. bei
+// Nachrichten nicht mehr unterscheiden, wer wer ist). guestNames: welchen
+// Namen dieses Gerät (Guest-Cookie) gerade trägt. nameOwners: welcher Name
+// gerade wem "gehört" (normalisiert, für den Kollisions-Check). Beides wird
+// beim DJ-Reset geleert. Anonym (leeres Namensfeld) ist davon unberührt und
+// geht immer.
+const guestNames = new Map();
+const nameOwners = new Map();
+
 // DJ kann "Bereits gespielt" für Gäste komplett aus- und wieder einblenden
 // (z.B. wenn nur bestätigt-gespielte Songs, kein Live-Vorhören/Cuen, gezeigt
 // werden soll). Persistiert, damit die Wahl einen Serverneustart übersteht.
@@ -393,8 +403,27 @@ app.post('/api/wishes', (req, res) => {
   const songId = req.body.songId ? String(req.body.songId).slice(0, 100) : null;
   const wishId = req.body.wishId ? String(req.body.wishId).slice(0, 100) : null;
   const rawTitle = (req.body.title || '').trim().slice(0, 200);
-  const name = (req.body.name || '').trim().slice(0, 20) || null;
+  const submittedName = (req.body.name || '').trim().slice(0, 20) || null;
   const nachricht = (req.body.nachricht || '').trim().slice(0, 500);
+
+  // Eigenen Namen darf man jederzeit ändern, aber zwei Gäste dürfen nicht
+  // gleichzeitig denselben Namen tragen. Ist der gewünschte Name schon von
+  // jemand anderem belegt, wird der Wunsch stattdessen anonym gesendet.
+  // Anonym (leeres Feld) geht immer.
+  let name = null;
+  if (submittedName) {
+    const key = normalize(submittedName);
+    const owner = nameOwners.get(key);
+    if (!owner || owner === req.guestId) {
+      const previousName = guestNames.get(req.guestId);
+      if (previousName && normalize(previousName) !== key) {
+        nameOwners.delete(normalize(previousName));
+      }
+      guestNames.set(req.guestId, submittedName);
+      nameOwners.set(key, req.guestId);
+      name = submittedName;
+    }
+  }
 
   let interpret = null;
   let title = rawTitle;
@@ -538,6 +567,8 @@ app.delete('/api/wishes/played', requireDashboardAuth, (req, res) => {
 // werden komplett geleert.
 app.post('/api/reset', requireDashboardAuth, (req, res) => {
   wishes.length = 0;
+  guestNames.clear();
+  nameOwners.clear();
   saveWishes();
   broadcastWishes();
   res.status(204).end();
