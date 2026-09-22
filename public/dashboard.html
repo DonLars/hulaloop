@@ -4,21 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DJ-Dashboard · Songwünsche</title>
-<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/style.css?v=57">
 </head>
 <body class="dashboard">
   <header class="dash-header">
-    <h1>🎧 Songwünsche</h1>
+    <h1>DJ Dashboard</h1>
     <div class="status">
-      <span id="conn-dot" class="dot"></span>
-      <span id="conn-text">verbinde…</span>
-      <button id="sound-toggle">🔔 Ton an</button>
+      <span class="conn-badge">
+        <span id="conn-dot" class="dot"></span>
+        <span id="conn-text">verbinde…</span>
+      </span>
+      <button id="sound-toggle" class="icon-toggle" aria-label="Ton an/aus" title="Ton an/aus"></button>
+      <button id="played-toggle" class="icon-toggle" aria-label="Bereits gespielt für Gäste an/aus" title="Bereits gespielt für Gäste an/aus"></button>
+      <button id="reset-all" class="danger-button" title="Alle Wünsche und den Verlauf zurücksetzen">Reset</button>
     </div>
   </header>
 
   <ul id="wish-list" class="wish-list"></ul>
   <p id="empty" class="hint hidden">Noch keine Songwünsche eingegangen.</p>
 
-  <script src="/static/dashboard.js"></script>
+  <section class="played-section">
+    <div class="played-header">
+      <h2>Gespielte Songs</h2>
+      <div class="played-actions">
+        <a id="export-csv" class="link-button" href="/api/wishes/played/export.csv" title="Gespielte Songs als CSV-Datei herunterladen">CSV herunterladen</a>
+        <button id="clear-played" class="danger-button" title="Alle gespielten Songs endgültig löschen">Alle löschen</button>
+      </div>
+    </div>
+    <ul id="played-list" class="wish-list"></ul>
+    <p id="played-empty" class="hint hidden">Noch keine Songs gespielt.</p>
+    <button id="played-more" class="hidden" type="button" title="Weitere gespielte Songs anzeigen">Alle anzeigen</button>
+  </section>
+
+  <script src="/static/dashboard.js?v=31"></script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 :root {
-  /* Gäste-Formular: an bevetech.de angelehnt (kräftiges Gelb, weiße Karten, Disco-Verlauf) */
+  /* Gäste-Formular: an bevetech.de angelehnt (kräftiges Gelb, weiße Karten) */
   --bg: #f6c934;
   --card: #ffffff;
-  --accent: #ff3d77;
-  --accent-grad: linear-gradient(135deg, #ff3d77 0%, #ff7a3d 55%, #ffc23d 100%);
+  --accent: #f6c934;
+  --accent-grad: linear-gradient(135deg, #ffe066 0%, #f6c934 100%);
   --text: #211d12;
   --muted: #756c4e;
   --ok: #1f9d55;
@@ -11,6 +11,10 @@
 }
 
 * { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
   margin: 0;
@@ -21,6 +25,12 @@ body {
   display: flex;
   justify-content: center;
   padding: 24px 16px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  -webkit-tap-highlight-color: transparent;
+}
+
+a, button {
+  touch-action: manipulation;
 }
 
 .wrapper { max-width: 420px; width: 100%; }
@@ -30,7 +40,7 @@ body {
   border-radius: 18px 18px 0 0;
   padding: 30px 24px 44px;
   text-align: center;
-  color: #fff;
+  color: var(--text);
 }
 
 .hero .logo { font-size: 2.2rem; }
@@ -44,7 +54,7 @@ body {
 .hero p {
   margin: 4px 0 0;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--muted);
 }
 
 .card {
@@ -61,7 +71,7 @@ h1 { margin: 0 0 8px; font-size: 1.6rem; }
   color: var(--muted);
   font-size: 0.88rem;
   line-height: 1.4;
-  background: #fdf3d6;
+  background: #dceefc;
   border-radius: 10px;
   padding: 10px 12px;
 }
@@ -87,11 +97,15 @@ input:focus, textarea:focus {
 }
 
 button {
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  line-height: 1;
   margin-top: 20px;
   background: var(--accent-grad);
-  color: #fff;
+  color: var(--text);
   border: none;
-  border-radius: 999px;
+  border-radius: 0.5rem;
   padding: 14px;
   font-size: 1rem;
   font-weight: 700;
@@ -99,7 +113,18 @@ button {
   width: 100%;
 }
 
+button:hover { filter: brightness(0.93); }
 button:active { transform: scale(0.98); }
+
+#wish-form button {
+  background: #f6c934;
+  color: #000;
+}
+
+#wish-form button:hover {
+  background: #d9a900;
+  filter: none;
+}
 
 .success, .error {
   margin-top: 16px;
@@ -117,10 +142,114 @@ button:active { transform: scale(0.98); }
   background: transparent;
   border: 1px solid var(--ok);
   color: var(--ok);
-  border-radius: 10px;
+  border-radius: 0.5rem;
+  font-weight: 700;
+}
+
+.success button:hover {
+  background: var(--ok);
+  color: #fff;
 }
 
 .hidden { display: none !important; }
+
+/* Songwunsch-Seite: einheitliche Schriftgröße für Labels, Hinweise, Links */
+.card label,
+.card .hint,
+.card .link-button {
+  font-size: 1rem;
+}
+
+.hint-wifi { color: #0b3d78; }
+
+input::placeholder,
+textarea::placeholder {
+  color: #7a5c00;
+  opacity: 1;
+}
+
+.autocomplete { position: relative; }
+
+.autocomplete input { width: 100%; }
+
+.suggestions {
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--card);
+  border: 1px solid #e7dcb3;
+  border-radius: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(30, 20, 0, 0.15);
+}
+
+.suggestions li {
+  padding: 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.suggestions li:hover { background: #faf6e8; }
+
+.suggestions .badge {
+  font-size: 0.75rem;
+  color: #7a5c00;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.link-button {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 0.5rem;
+  border: 1px solid var(--muted);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: filter 0.15s;
+}
+
+.link-button:hover { filter: brightness(0.93); }
+
+.playlist-link {
+  margin-top: 32px;
+  border-radius: 0.5rem;
+  border: none;
+  background: var(--accent-grad);
+  color: #211d12;
+  font-weight: 700;
+}
+
+.playlist-link:hover {
+  background: #d9a900;
+  filter: none;
+}
+
+.playlist-link-outline {
+  border-radius: 0.5rem;
+  background: #1a1d29;
+  border: none;
+  color: #fff;
+  font-weight: 700;
+}
+
+.playlist-link-outline:hover {
+  background: #000;
+  color: #fff;
+}
 
 /* Dashboard: dunkles Theme fürs abgedunkelte DJ-Pult, bewusst nicht im Gelb-Look */
 body.dashboard {
@@ -148,7 +277,67 @@ body.dashboard .hint {
   margin-bottom: 20px;
 }
 
-.status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+.qr-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: #faf6e8;
+  border-radius: 10px;
+}
+
+.qr-box img {
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+
+.qr-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+
+/* Verbindungsstatus, im gleichen Grau + Radius wie Reset/die anderen Buttons daneben. */
+.conn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 0.5rem;
+  background: #3a3d4a;
+  color: #fff;
+}
+
+/* Dezente Icon-Buttons (Ton/Vorschau) im selben Stil wie die Daumen-Icons in
+   der Wunschliste, gleiche Größe wie die 2x/3x-Badges, gleicher Radius wie
+   Reset/die anderen Buttons daneben statt rund. */
+.icon-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0.5rem;
+  background: #3a3d4a;
+  color: #fff;
+}
+
+.icon-toggle svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.icon-toggle:hover {
+  filter: brightness(1.2);
+}
 
 .dot {
   width: 10px;
@@ -158,17 +347,6 @@ body.dashboard .hint {
 }
 
 .dot.online { background: var(--ok); }
-
-#sound-toggle {
-  margin: 0;
-  padding: 6px 12px;
-  font-size: 0.85rem;
-  border-radius: 999px;
-  background: #262838;
-  color: var(--text);
-  border: 1px solid #363850;
-  width: auto;
-}
 
 .wish-list {
   list-style: none;
@@ -182,13 +360,562 @@ body.dashboard .hint {
 .wish {
   background: var(--card);
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 20px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  touch-action: pan-y;
+}
+
+/* Linke Spalte: Text, darf umbrechen, ohne die rechte Button-Spalte zu verdrängen. */
+.wish-info {
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 12px;
+  gap: 6px 10px;
   align-items: baseline;
 }
 
-.wish-time { color: var(--muted); font-size: 0.85rem; min-width: 70px; }
-.wish-main { font-size: 1.05rem; }
-.wish-msg { flex-basis: 100%; color: var(--muted); font-size: 0.9rem; font-style: italic; }
+/* Rechte Spalte: Aktionen, immer oben rechts, feste Breite nach Inhalt. */
+.wish-side {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* DJ-Dashboard: Uhrzeit steht wie bei WhatsApp als eigenes Element ZWISCHEN
+   den Karten (nicht innerhalb), dadurch rutschen Zähler/Titel/Aktionen
+   weiter nach links statt Platz mit der Uhrzeit teilen zu müssen. Negativer
+   margin-bottom zieht die folgende Karte näher heran, damit Uhrzeit+Karte
+   optisch zusammengehören, während zur nächsten Uhrzeit der normale
+   .wish-list-Abstand bleibt. */
+.wish-time-divider {
+  color: var(--muted);
+  font-size: 0.75rem;
+  padding: 0 4px;
+  margin-bottom: -6px;
+}
+
+/* Uhrzeit + Titel: bleiben nebeneinander (Titel bricht intern um), statt dass der Titel als Ganzes in eine neue Zeile rutscht. */
+.wish-title-row {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* Zähler-Badge + Titel: gleiches Prinzip wie .wish-title-row – bleiben immer
+   in einer Zeile, der Titel bricht bei Bedarf intern um, statt komplett
+   unter den Badge zu rutschen. */
+.wish-headline {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.wish-time { flex: 0 0 auto; color: var(--muted); font-size: 0.85rem; min-width: 74px; }
+.wish-main { flex: 1 1 auto; min-width: 0; font-size: 1.05rem; line-height: 1.5; }
+
+/* Schmaler Bildschirm: kein Platz mehr für Spalten nebeneinander, alles untereinander. */
+@media (max-width: 480px) {
+  .wish {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wish-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .wish-side.wish-actions {
+    align-items: stretch;
+  }
+
+  /* Test: löschen (Dashboard) 90° gedreht am rechten Rand statt volle Breite unten. */
+  .wish:has(.wish-side-rotate) {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .wish-side-rotate {
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    padding-left: 12px;
+    border-left: 1px solid var(--muted);
+  }
+
+  .wish-side-rotate .wish-delete {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    padding: 10px 6px;
+  }
+}
+
+/* Abstimmen/zurücknehmen/eigenen-Wunsch-löschen in der Wunschliste: jetzt
+   auf allen Bildschirmgrößen (nicht mehr nur mobil), da das Ergebnis auch
+   auf Desktop besser gefällt. Eigenständiges, durchgehend farbiges Element
+   am rechten Kartenrand (keine Umrandung, keine Trennlinie – die Fläche
+   selbst ist die Spalte). Wischen bleibt ein mobiler Bonus (Touch-Events). */
+.wish:has(.wish-side-vote) {
+  flex-direction: row;
+  align-items: stretch;
+  padding: 0;
+}
+
+.wish:has(.wish-side-vote) > .wish-info {
+  padding: 20px 12px 20px 16px;
+  min-width: 0;
+}
+
+/* Eigene Rundung statt overflow:hidden am Wish-Container – sonst würde das
+   Klick-Popup (z-index) am Kartenrand abgeschnitten statt darüber zu ragen. */
+.wish-side-vote {
+  flex: 0 0 auto;
+  align-items: stretch;
+  background: #f6c934;
+  border-radius: 0 10px 10px 0;
+}
+
+.wish-side-vote .wish-vote {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  padding: 14px 10px;
+}
+
+.wish-side-vote .wish-vote.plus,
+.wish-side-vote .wish-vote.minus {
+  border: none;
+  color: #000;
+}
+
+/* Höhere Spezifität nötig als .wish-vote.plus:hover/.minus:hover weiter
+   unten in der Datei (Desktop-Grün/Rot-Hover) – sonst blitzt beim
+   Hovern/Tippen kurz Grün/Rot auf. */
+.wish-side-vote .wish-vote:hover,
+.wish-side-vote .wish-vote.plus:hover,
+.wish-side-vote .wish-vote.minus:hover {
+  background: transparent;
+  color: #000;
+}
+
+/* Nur noch das Daumen-Icon, kein Text und kein +/- mehr, dafür größer. */
+.wish-side-vote .wish-vote .btn-icon,
+.wish-side-vote .wish-vote .btn-label {
+  display: none;
+}
+
+.wish-side-vote .wish-vote .btn-thumb {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+/* Zustand statt Geste: sobald abgestimmt wurde, bleibt die ganze Karte in
+   einem transparenteren Gelb (heller als die Vollton-Spalte rechts), Titel
+   und Interpret bleiben weiß. Gilt gleich, egal ob per Klick oder per
+   Wisch abgestimmt wurde. */
+.wish:has(.wish-side-vote .wish-vote.minus) {
+  background: linear-gradient(rgba(246, 201, 52, 0.22), rgba(246, 201, 52, 0.22)), var(--card);
+}
+
+/* Eigenen Wunsch entfernen im selben Spalten-Stil wie oben, nur rot statt
+   gelb. Gleiches Icon-Set/gleiche Größe wie der Daumen, damit beide Spalten
+   optisch (Breite/Höhe) zueinander passen. */
+.wish:has(.wish-side-remove) {
+  flex-direction: row;
+  align-items: stretch;
+  padding: 0;
+}
+
+.wish:has(.wish-side-remove) > .wish-info {
+  padding: 20px 12px 20px 16px;
+  min-width: 0;
+}
+
+.wish-side-remove {
+  flex: 0 0 auto;
+  align-items: stretch;
+  background: var(--err);
+  border-radius: 0 10px 10px 0;
+}
+
+.wish-side-remove .wish-remove-mine {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  border: none;
+  /* Radius immer (nicht nur bei :hover) gesetzt, sonst ändert sich die
+     Hover-Trefferfläche an der Ecke beim Umschalten und es flackert. */
+  border-radius: 0 10px 10px 0;
+  background: transparent;
+  color: #000;
+  font-weight: 400;
+  padding: 14px 10px;
+}
+
+.wish-side-remove .wish-remove-mine:hover {
+  background: #c23b3b;
+  color: #000;
+}
+
+.wish-side-remove .wish-remove-mine .btn-icon {
+  display: none;
+}
+
+.wish-side-remove .wish-remove-mine .btn-thumb {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+/* Nur der Titeltext selbst wird durchgestrichen, nicht Chip/Icon daneben. */
+.wish-title-text.not-found { text-decoration: line-through wavy; color: var(--muted); font-style: italic; }
+.wish-requested-label {
+  display: inline-block;
+  background: #f6c934;
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 12px;
+  margin-left: 6px;
+  border-radius: 0.5rem;
+  vertical-align: middle;
+}
+.wish-msg { flex-basis: 100%; color: var(--muted); font-size: 0.9rem; }
+
+/* Gemeinsames Klick-Popup (Info-Icon + Zähler-Chip): Klick zeigt eine kleine
+   Sprechblase mit dem Text aus data-tip, Klick woanders schließt sie wieder. */
+.has-tip {
+  position: relative;
+  cursor: pointer;
+}
+
+.has-tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 130%;
+  left: 0;
+  margin-left: -4px;
+  background: #000;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+  z-index: 10;
+}
+
+.has-tip.open::after {
+  opacity: 1;
+}
+
+/* Großer, gefüllter Badge (gleiche Größe wie der eigene-Wunsch-X-Button),
+   steht VOR Titel/Interpret statt danach. Jetzt ein <button> (klickbar fürs
+   Popup) statt <span>, daher width/margin vom globalen button-Reset
+   explizit zurücksetzen. */
+.wish-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--muted);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-style: normal;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Mehr als einmal gewünscht: heben wir farblich hervor. */
+.wish-count-popular {
+  background: #f6c934;
+}
+
+.wish-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.wish-not-found,
+.wish-played,
+.wish-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  width: auto;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  border-radius: 0.5rem;
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+.wish-not-found {
+  border: 1px solid #f6c934;
+  color: #f6c934;
+}
+
+.wish-not-found:hover,
+.wish-not-found.active {
+  background: #f6c934;
+  color: #000;
+}
+
+.wish-played {
+  border: 1px solid var(--ok);
+  color: var(--ok);
+}
+
+.wish-played:hover {
+  background: var(--ok);
+  color: #000;
+}
+
+.wish-delete {
+  border: 1px solid var(--err);
+  color: var(--err);
+}
+
+.wish-delete:hover {
+  background: var(--err);
+  color: #000;
+}
+
+.wish-vote {
+  margin: 0;
+  padding: 8px 16px;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: 0.5rem;
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+/* Quadratischer Icon-Button (nur "X"), gleich hoch wie breit */
+.wish-remove-mine {
+  margin: 0;
+  width: auto;
+  height: auto;
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1;
+  border-radius: 0.5rem;
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+.wish-vote:disabled,
+.wish-remove-mine:disabled {
+  opacity: 0.6;
+}
+
+.wish-vote:focus-visible,
+.wish-remove-mine:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Klare Farbsprache: grün = abstimmen (nach oben), gelb = Stimme zurückziehen, rot = eigenen Wunsch löschen */
+.wish-vote.plus { border: 1px solid #3ddc84; color: #3ddc84; }
+.wish-vote.plus:hover {
+  background: #3ddc84;
+  color: #000;
+}
+
+.wish-vote.minus { border: 1px solid var(--err); color: var(--err); }
+.wish-vote.minus:hover {
+  background: var(--err);
+  color: #000;
+}
+
+.wish-remove-mine { border: 1px solid var(--err); color: var(--err); }
+.wish-remove-mine:hover {
+  background: var(--err);
+  color: #000;
+}
+
+.btn-icon {
+  display: inline-block;
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* Nur für die mobile, gedrehte Abstimmen-Spalte sichtbar (siehe .wish-side-vote). */
+.btn-thumb {
+  display: none;
+}
+
+.wish-mine {
+  order: 5;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.played-section { margin-top: 36px; }
+.played-section h2 { margin: 0 0 14px; font-size: 1.15rem; color: var(--text); }
+
+#played-list.played-list-fade {
+  position: relative;
+  max-height: 340px;
+  overflow: hidden;
+}
+
+#played-list.played-list-fade::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 90px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+}
+
+#played-more {
+  display: block;
+  width: auto;
+  margin: 14px auto 0;
+  padding: 10px 22px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+#played-more:hover {
+  background: var(--muted);
+  border-color: var(--muted);
+  color: #000;
+  filter: none;
+}
+
+.played-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.played-header h2 { margin: 0; font-size: 1.15rem; }
+
+.played-actions { display: flex; gap: 8px; }
+
+.played-actions .link-button {
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  border-radius: 0.5rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.played-actions .link-button:hover {
+  background: var(--muted);
+  color: #000;
+  border-color: var(--muted);
+}
+
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  width: auto;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--err);
+  color: var(--err);
+  transition: background 0.15s, color 0.15s;
+}
+
+.danger-button:hover {
+  background: var(--err);
+  color: #000;
+}
+
+/* Reset im Kopfbereich: ausgefüllt statt nur umrandet, gleiches Padding/Radius wie .danger-button. */
+#reset-all {
+  background: var(--err);
+  border-color: var(--err);
+  color: #000;
+}
+
+#reset-all:hover {
+  filter: brightness(0.9);
+}
+
+.played-actions .link-button:focus-visible,
+.danger-button:focus-visible,
+.wish-not-found:focus-visible,
+.wish-played:focus-visible,
+.wish-delete:focus-visible,
+.wish-vote:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.played-section .wish { opacity: 0.85; }
+
+/* Gäste-Wunschliste: einheitliche Schriftgröße */
+.playlist-view .hint,
+.playlist-view .wish-time,
+.playlist-view .wish-main,
+.playlist-view .link-button {
+  font-size: 1rem;
+}

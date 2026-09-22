@@ -2,45 +2,54 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Songwunsch an den DJ</title>
-<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/style.css?v=57">
 </head>
 <body>
   <div class="wrapper">
   <header class="hero">
-    <div class="logo">🎧</div>
     <h1>Songwunsch</h1>
     <p>Sag dem DJ, was du hören willst</p>
   </header>
   <main class="card">
-    <p class="hint">
+    <p class="hint hint-wifi">
       Dieses WLAN dient nur für Songwünsche und hat kein Internet.
       Für eigenes Internet bitte WLAN kurz deaktivieren oder mobile Daten nutzen.
     </p>
 
-    <form id="wish-form">
-      <label for="interpret">Interpret *</label>
-      <input type="text" id="interpret" name="interpret" required maxlength="200" autocomplete="off">
+    <form id="wish-form" autocomplete="off">
+      <label for="song-input">Was wünscht du dir?</label>
+      <div class="autocomplete">
+        <input type="text" id="song-input" name="song-input" required maxlength="200" placeholder="z.B. Queen – Bohemian Rhapsody" autocomplete="off">
+        <ul id="suggestions" class="suggestions hidden"></ul>
+      </div>
 
-      <label for="song">Song *</label>
-      <input type="text" id="song" name="song" required maxlength="200" autocomplete="off">
+      <label for="name">Dein Name (optional)</label>
+      <input type="text" id="name" name="name" maxlength="20">
 
       <label for="nachricht">Nachricht an den DJ (optional)</label>
       <textarea id="nachricht" name="nachricht" maxlength="500" rows="3"></textarea>
 
-      <button type="submit">Wunsch senden</button>
+      <button type="submit" title="Songwunsch an den DJ abschicken">Wunsch senden</button>
     </form>
+
+    <a href="/playlist" class="link-button playlist-link-outline" title="Alle aktuellen Songwünsche ansehen">Wunschliste ansehen</a>
+
+    <div class="qr-box">
+      <img src="/api/qr.svg" alt="QR-Code zu dieser Seite" width="96" height="96">
+      <p>Diese Seite direkt auf deinem Handy öffnen: QR-Code scannen.</p>
+    </div>
 
     <div id="success" class="success hidden">
       ✅ Danke! Dein Wunsch ist beim DJ angekommen.
-      <button id="again">Noch einen Wunsch senden</button>
+      <button id="again" title="Weiteren Songwunsch senden">Noch einen Wunsch senden</button>
     </div>
 
     <div id="error" class="error hidden"></div>
   </main>
   </div>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=2"></script>
 </body>
 </html>

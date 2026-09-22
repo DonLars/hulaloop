@@ -2,8 +2,14 @@
 
 Offline Musikwunsch-App für DJs. Gäste verbinden sich mit einem lokalen WLAN
 ohne Internet, bekommen automatisch ein Formular angezeigt (wie ein
-Hotel-WLAN-Login) und können dort Songwünsche einreichen. Der DJ sieht die
-Wünsche live mit Uhrzeit auf einem Dashboard, inklusive Ton-Signal.
+Hotel-WLAN-Login) und können dort Songwünsche einreichen. Wünscht sich jemand
+einen bereits vorhandenen Song erneut, zählt der Wunsch hoch und rutscht in
+der Liste nach oben, statt doppelt aufzutauchen. Der DJ sieht die Wünsche
+live mit Uhrzeit auf einem geschützten Dashboard, inklusive Ton-Signal, und
+markiert Titel als "gespielt" (wandern in eine eigene History mit
+Lösch-Button, CSV-Export und "alle löschen") oder "nicht gefunden"
+(durchgestrichene Anzeige). Gäste können die aktuelle Wunschliste
+zusätzlich einsehen und per Daumen-hoch mitwünschen (`/playlist`).
 
 ## Software starten
 
@@ -15,11 +21,45 @@ npm start
 Standardmäßig läuft der Server auf Port 80 (`http://0.0.0.0:80`). Einen
 anderen Port über die Umgebungsvariable `PORT` setzen, z.B. `PORT=8080 npm start`.
 
+Das Dashboard ist per Login-Seite mit Benutzername + Passwort geschützt
+(Standard: `hulaloop` / `hulaloop`). Für die Party unbedingt eigene Werte
+setzen:
+
+```bash
+DASHBOARD_USERNAME=eigener-name DASHBOARD_PASSWORD=eigenes-passwort npm start
+```
+
 - Formular für Gäste: `http://<server-ip>/`
-- Live-Dashboard für den DJ: `http://<server-ip>/dashboard`
+- Öffentliche Wunschliste (nur lesen, keine Namen): `http://<server-ip>/playlist`
+- Live-Dashboard für den DJ (Passwort nötig): `http://<server-ip>/dashboard`
 
 Alle eingereichten Wünsche werden in `server/data/wishes.json` gespeichert
 und bleiben über einen Neustart hinweg erhalten.
+
+## Song-Autocomplete (lokale Datenbank, kein Internet zur Partyzeit nötig)
+
+Das Songfeld im Gäste-Formular schlägt Titel aus einer lokalen Katalog-Datei
+(`server/data/songs.json`) sowie bereits heute Abend gewünschten Songs vor.
+Wählt ein Gast einen schon gewünschten Song aus den Vorschlägen aus, zählt
+der bestehende Wunsch hoch, statt einen neuen anzulegen.
+
+Die Katalog-Datei wird **vorab, solange der PC noch normal Internet hat**,
+mit den aktuellen Charts plus ein paar Genre-/Ären-Suchen über die
+iTunes-Search-API befüllt:
+
+```bash
+node server/scripts/sync-songs.js
+```
+
+Während der Party selbst braucht der Server dafür kein Internet mehr, die
+Suche läuft komplett gegen die zuvor erzeugte lokale Datei.
+
+Ist beim Suchen zusätzlich Internet verfügbar (z.B. beim Testen zuhause/im
+Büro), fragt der Server parallel live beim kompletten Apple-Music-Katalog
+nach (kurzer Timeout, kein Blockieren) und ergänzt die Vorschläge – so sind
+auch Songs abgedeckt, die nicht im vorab gebauten Katalog stecken. Am
+Partyort ohne Internet läuft die Live-Anfrage einfach ins Leere und es
+bleibt bei den lokalen Vorschlägen.
 
 ## Netzwerk-Architektur (Offline-Party-WLAN)
 

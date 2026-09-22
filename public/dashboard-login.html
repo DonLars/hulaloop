@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ-Login · hulaloop</title>
+<link rel="stylesheet" href="/static/style.css?v=57">
+</head>
+<body>
+  <div class="wrapper">
+  <header class="hero">
+    <h1>DJ-Dashboard</h1>
+    <p>Nur für den DJ</p>
+  </header>
+  <main class="card">
+    <form id="login-form" autocomplete="off">
+      <label for="username">Benutzername</label>
+      <input type="text" id="username" name="username" required autofocus autocomplete="off">
+
+      <label for="password">Passwort</label>
+      <input type="password" id="password" name="password" required autocomplete="off">
+      <button type="submit" title="Im DJ-Dashboard anmelden">Anmelden</button>
+    </form>
+
+    <div id="error" class="error hidden"></div>
+  </main>
+  </div>
+
+  <script src="/static/dashboard-login.js?v=2"></script>
+</body>
+</html>
