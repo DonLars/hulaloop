@@ -312,7 +312,13 @@ app.get('/api/qr.svg', async (req, res) => {
   try {
     let host = req.headers.host || '';
     if (/^(localhost|127\.0\.0\.1)(:|$)/.test(host)) {
-      const lanAddress = findLanAddress();
+      // Nimmt die tatsächliche lokale Adresse dieser Verbindung (statt zu raten,
+      // welches Interface "das richtige" ist) – korrekt auch wenn der PC
+      // mehrere Netzwerk-Interfaces hat (z.B. Party-Ethernet + Büro-WLAN).
+      const socketAddress = req.socket.localAddress?.replace(/^::ffff:/, '');
+      const lanAddress = socketAddress && socketAddress !== '127.0.0.1' && socketAddress !== '::1'
+        ? socketAddress
+        : findLanAddress();
       if (lanAddress) host = `${lanAddress}:${PORT}`;
     }
     const url = `http://${host}/`;
