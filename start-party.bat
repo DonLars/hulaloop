@@ -5,6 +5,8 @@ REM Vor der ersten Party unbedingt anpassen (nicht die Standardwerte
 REM hulaloop/hulaloop fuer den echten Partybetrieb verwenden):
 set DASHBOARD_USERNAME=change-me
 set DASHBOARD_PASSWORD=change-me
+REM WLAN-Name (SSID) des Routers, muss exakt stimmen (QR-Code unter /api/wifi-qr.svg):
+set WIFI_SSID=Musikwunsch
 
 REM Nur aktivieren, falls der automatische Standardpfad (macOS) auf diesem
 REM Windows-PC nicht existiert. Erst den echten Pfad der Serato-Datenbank

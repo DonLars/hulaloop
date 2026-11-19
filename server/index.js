@@ -330,6 +330,25 @@ app.get('/api/qr.svg', async (req, res) => {
   }
 });
 
+// WLAN-QR-Code zum automatischen Beitritt (offenes Netz ohne Passwort).
+// SSID über WIFI_SSID setzen, muss exakt dem Namen im Router entsprechen.
+const WIFI_SSID = process.env.WIFI_SSID || 'Musikwunsch';
+
+function wifiQrPayload(ssid) {
+  const escaped = ssid.replace(/([\\;,:"])/g, '\\$1');
+  return `WIFI:T:nopass;S:${escaped};;`;
+}
+
+app.get('/api/wifi-qr.svg', async (req, res) => {
+  try {
+    const svg = await QRCode.toString(wifiQrPayload(WIFI_SSID), { type: 'svg', margin: 2, width: 400 });
+    res.set('Content-Type', 'image/svg+xml');
+    res.send(svg);
+  } catch (err) {
+    res.status(500).send('QR-Code konnte nicht erzeugt werden.');
+  }
+});
+
 app.post('/api/dashboard/login', (req, res) => {
   const username = String(req.body.username || '');
   const password = String(req.body.password || '');
