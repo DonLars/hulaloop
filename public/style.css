@@ -1090,3 +1090,13 @@ body.dashboard textarea:focus {
 #wish-banner.show { opacity: 1; pointer-events: auto; animation: banner-in 0.35s ease-out forwards, banner-pulse 0.8s ease-in-out 0.35s 3; }
 @keyframes banner-in { to { transform: translate(-50%, 0); } }
 @keyframes banner-pulse { 50% { box-shadow: 0 0 0 10px rgba(255, 93, 162, 0.35), 0 8px 32px rgba(0, 0, 0, 0.5); } }
+
+/* Mitteilungen-Knopf: gelbe Schrift und Umrandung wie die anderen gelben Buttons */
+#notify-toggle.yellow-outline {
+  border-color: #f6c934;
+  color: #f6c934;
+}
+#notify-toggle.yellow-outline:hover {
+  background: #f6c934;
+  color: #000;
+}
