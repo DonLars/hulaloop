@@ -3,6 +3,7 @@
   --bg: #f6c934;
   --card: #ffffff;
   --accent: #f6c934;
+  --outline: #f6c934; /* einheitliche Farbe für alle umrandeten Buttons */
   --accent-grad: linear-gradient(135deg, #ffe066 0%, #f6c934 100%);
   --text: #211d12;
   --muted: #756c4e;
@@ -678,34 +679,18 @@ body.dashboard .hint {
   transition: background 0.15s, color 0.15s;
 }
 
-.wish-not-found {
-  border: 1px solid #f6c934;
-  color: #f6c934;
+.wish-not-found,
+.wish-played,
+.wish-delete {
+  border: 1px solid var(--outline);
+  color: var(--outline);
 }
 
 .wish-not-found:hover,
-.wish-not-found.active {
-  background: #f6c934;
-  color: #000;
-}
-
-.wish-played {
-  border: 1px solid var(--ok);
-  color: var(--ok);
-}
-
-.wish-played:hover {
-  background: var(--ok);
-  color: #000;
-}
-
-.wish-delete {
-  border: 1px solid var(--err);
-  color: var(--err);
-}
-
+.wish-not-found.active,
+.wish-played:hover,
 .wish-delete:hover {
-  background: var(--err);
+  background: var(--outline);
   color: #000;
 }
 
@@ -755,21 +740,13 @@ body.dashboard .hint {
 }
 
 /* Klare Farbsprache: grün = abstimmen (nach oben), gelb = Stimme zurückziehen, rot = eigenen Wunsch löschen */
-.wish-vote.plus { border: 1px solid #3ddc84; color: #3ddc84; }
-.wish-vote.plus:hover {
-  background: #3ddc84;
-  color: #000;
-}
-
-.wish-vote.minus { border: 1px solid var(--err); color: var(--err); }
-.wish-vote.minus:hover {
-  background: var(--err);
-  color: #000;
-}
-
-.wish-remove-mine { border: 1px solid var(--err); color: var(--err); }
+.wish-vote.plus,
+.wish-vote.minus,
+.wish-remove-mine { border: 1px solid var(--outline); color: var(--outline); }
+.wish-vote.plus:hover,
+.wish-vote.minus:hover,
 .wish-remove-mine:hover {
-  background: var(--err);
+  background: var(--outline);
   color: #000;
 }
 
@@ -821,15 +798,15 @@ body.dashboard .hint {
   font-weight: 400;
   border-radius: 0.5rem;
   background: transparent;
-  border: 1px solid var(--muted);
-  color: var(--muted);
+  border: 1px solid var(--outline);
+  color: var(--outline);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 #played-more:hover {
-  background: var(--muted);
-  border-color: var(--muted);
+  background: var(--outline);
+  border-color: var(--outline);
   color: #000;
   filter: none;
 }
@@ -855,10 +832,15 @@ body.dashboard .hint {
   transition: background 0.15s, color 0.15s;
 }
 
+.played-actions .link-button {
+  border-color: var(--outline);
+  color: var(--outline);
+}
+
 .played-actions .link-button:hover {
-  background: var(--muted);
+  background: var(--outline);
   color: #000;
-  border-color: var(--muted);
+  border-color: var(--outline);
 }
 
 .danger-button {
@@ -873,13 +855,13 @@ body.dashboard .hint {
   font-weight: 400;
   border-radius: 0.5rem;
   background: transparent;
-  border: 1px solid var(--err);
-  color: var(--err);
+  border: 1px solid var(--outline);
+  color: var(--outline);
   transition: background 0.15s, color 0.15s;
 }
 
 .danger-button:hover {
-  background: var(--err);
+  background: var(--outline);
   color: #000;
 }
 

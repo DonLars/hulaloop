@@ -22,6 +22,9 @@
   Dashboard-Login erreichbar (vorher öffentlich unter `/api/wifi-qr.svg`).
 - Eigenen Wunsch löschen ist zweistufig („Wirklich löschen?“ beim ersten Tipp).
 
+- Umrandete Buttons (Dashboard-Aktionen, „Alle löschen“, „Alle anzeigen“, CSV,
+  Abstimmen/Löschen am Desktop) einheitlich in Gelb (`--outline`).
+
 ### Behoben
 - **Fehlklicks durch springende Listen:** Neue Daten werden nicht gezeichnet,
   solange jemand auf einen Button zielt, tippt oder wischt (`render-gate.js`).
