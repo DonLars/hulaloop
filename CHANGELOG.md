@@ -8,10 +8,11 @@
   den QR-Code lädt ihn als SVG herunter.
 - **WLAN-Name (SSID) im Dashboard festlegbar:** wird in `settings.json`
   gespeichert; `WIFI_SSID` gilt nur noch als Startwert. Speichern per Icon.
-- **Uhrzeit pro Wunsch:** „gewünscht um HH:MM Uhr“ unter jedem Titel, im
-  Dashboard zusätzlich „zuletzt erneut …“ bei wiederholten Wünschen.
+- **Uhrzeit pro Wunsch (nur Dashboard):** „gewünscht um HH:MM Uhr“ unter jedem
+  Titel, zusätzlich „zuletzt erneut …“ bei wiederholten Wünschen.
 - **„Nicht gefunden“ für Gäste sichtbar:** Der rechte Button wird zu einem
-  anklickbaren Fragezeichen („Der Titel wurde leider nicht gefunden“), der
+  anklickbaren Fragezeichen-Icon (graue Spalte am Kartenrand wie Abstimmen/
+  Löschen, Hinweis „Der Titel wurde leider nicht gefunden“), der
   Wunsch rutscht in der Liste (Gäste und Dashboard) ganz nach unten.
 - **„Gespielt“ rückgängig machen:** Hinweis mit „Rückgängig“ nach dem Klick
   (neue Route `POST /api/wishes/:id/unplayed`).

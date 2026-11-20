@@ -914,12 +914,24 @@ body.dashboard .hint {
   font-size: 1rem;
 }
 
-/* Nicht gefundener Song (Gästeansicht): grauer Spalten-Streifen mit
-   anklickbarem Fragezeichen, Sprechblase öffnet sich nach links. */
+/* Nicht gefundener Song (Gästeansicht): gleiche durchgehende Spalte am
+   rechten Kartenrand wie Abstimmen/Löschen, in Grau (wie der 1x-Chip) mit
+   dem Hilfe-Icon; Sprechblase öffnet sich nach links. */
+.wish:has(.wish-side-notfound) {
+  flex-direction: row;
+  align-items: stretch;
+  padding: 0;
+}
+
+.wish:has(.wish-side-notfound) > .wish-info {
+  padding: 20px 12px 20px 16px;
+  min-width: 0;
+}
+
 .wish-side-notfound {
   flex: 0 0 auto;
   align-items: stretch;
-  background: #555;
+  background: var(--muted);
   border-radius: 0 10px 10px 0;
 }
 
@@ -928,26 +940,28 @@ body.dashboard .hint {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
+  width: auto;
   margin: 0;
   border: none;
   border-radius: 0 10px 10px 0;
   background: transparent;
-  color: #fff;
-  font-size: 1.6rem;
-  font-weight: 600;
+  color: #000;
+  padding: 14px 10px;
 }
 
-.wish-side-notfound .wish-notfound-hint:hover { background: transparent; }
+.wish-side-notfound .wish-notfound-hint:hover { background: transparent; color: #000; }
+
+.wish-side-notfound .wish-notfound-hint .btn-thumb {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
 
 .wish-notfound-hint.has-tip::after {
   left: auto;
   right: 0;
   margin-left: 0;
 }
-
-/* Uhrzeit, wann ein Titel gewünscht wurde (direkt unter dem Titel). */
-.wish-requested-at { flex-basis: 100%; color: var(--muted); font-size: 0.85rem; }
 
 /* Eigenen Wunsch löschen: erster Tipp zeigt "Wirklich löschen?". */
 .wish-remove-mine .btn-confirm { display: none; }

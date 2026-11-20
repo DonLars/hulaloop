@@ -17,6 +17,8 @@ const THUMB_DOWN_SVG = `<svg class="btn-thumb" viewBox="0 0 24 24" width="16" he
 // Gleiche Strichstärke/Stil wie die Daumen-Icons, damit Größe & Optik angeglichen sind.
 const CLOSE_SVG = `<svg class="btn-thumb" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
 
+const HELP_SVG = `<svg class="btn-thumb" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8.5a4 4 0 1 1 5.6 3.7c-1 .5-1.6 1.2-1.6 2.3"/><path d="M12 19.5h.01"/></svg>`;
+
 function countChip(count) {
   return `<button type="button" class="wish-count ${count > 1 ? 'wish-count-popular' : ''} has-tip" data-tip="${count}x gewünscht" title="Wie oft gewünscht">${count}x</button>`;
 }
@@ -73,7 +75,7 @@ function formatDateTime(iso) {
 function renderWish(wish) {
   const voteTitle = wish.votedByMe ? 'Stimme zurückziehen' : 'Nach oben schieben';
   const action = wish.notFound
-    ? `<button type="button" class="wish-notfound-hint has-tip" data-tip="Der Titel wurde leider nicht gefunden" title="Warum ist dieser Wunsch durchgestrichen?" aria-label="Der Titel wurde leider nicht gefunden">?</button>`
+    ? `<button type="button" class="wish-notfound-hint has-tip" data-tip="Der Titel wurde leider nicht gefunden" title="Warum ist dieser Wunsch durchgestrichen?" aria-label="Der Titel wurde leider nicht gefunden">${HELP_SVG}</button>`
     : wish.isMine
     ? `<button class="wish-remove-mine" data-id="${wish.id}" title="Deinen Wunsch zurückziehen" aria-label="Deinen Wunsch zurückziehen"><span class="btn-icon">X</span>${CLOSE_SVG}<span class="btn-confirm">Wirklich löschen?</span></button>`
     : `<button class="wish-vote ${wish.votedByMe ? 'minus' : 'plus'}" data-id="${wish.id}" title="${voteTitle}" aria-label="${voteTitle}"><span class="btn-icon">${wish.votedByMe ? '−' : '+'}</span>${wish.votedByMe ? THUMB_DOWN_SVG : THUMB_UP_SVG} <span class="btn-label">${wish.votedByMe ? 'zurücknehmen' : 'abstimmen'}</span></button>`;
@@ -84,7 +86,6 @@ function renderWish(wish) {
           ${countChip(wish.count)}
           <span class="wish-main"><span class="wish-title-text ${wish.notFound ? 'not-found has-tip' : ''}" ${wish.notFound ? 'data-tip="Der Titel wurde leider nicht gefunden"' : ''}>${escapeHtml(wish.title)}</span></span>
         </div>
-        <span class="wish-requested-at">gewünscht um ${formatDateTime(wish.firstRequestedAt)}</span>
       </div>
       <div class="wish-side ${wish.notFound ? 'wish-side-notfound' : wish.isMine ? 'wish-side-remove' : 'wish-side-vote'}">${action}</div>
     </li>
