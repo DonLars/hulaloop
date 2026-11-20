@@ -83,7 +83,11 @@ function renderActive(wishes) {
   const hasNew = !firstLoad && [...newIds].some((id) => !knownIds.has(id));
   const hasCountChange = !firstLoad && wishes.some((w) => w.voters.length > (countCache.get(w.id) || 0));
 
-  if (hasNew || hasCountChange) playBeep();
+  if (hasNew || hasCountChange) {
+    playBeep();
+    const fresh = wishes.filter((w) => !knownIds.has(w.id) || w.voters.length > (countCache.get(w.id) || 0));
+    notifyNewWish(fresh);
+  }
 
   countCache = new Map(wishes.map((w) => [w.id, w.voters.length]));
   knownIds = newIds;
@@ -226,6 +230,96 @@ function escapeHtml(str) {
   div.textContent = str;
   return div.innerHTML;
 }
+
+// Visuelle Benachrichtigung: Banner im Dashboard, System-Benachrichtigung
+// (macOS/Windows, v.a. wenn der Tab im Hintergrund ist) und blinkender Tab-Titel.
+const ORIGINAL_TITLE = document.title;
+let bannerTimer = null;
+let titleTimer = null;
+
+function notifyNewWish(fresh) {
+  if (fresh.length === 0) return;
+  const text = fresh.length === 1 ? fresh[0].title : `${fresh.length} neue Wünsche`;
+  const isVote = fresh.length === 1 && knownIds.has(fresh[0].id);
+  const heading = isVote ? 'Erneut gewünscht' : 'Neuer Musikwunsch';
+
+  let banner = document.getElementById('wish-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'wish-banner';
+    banner.setAttribute('role', 'alert');
+    banner.addEventListener('click', () => banner.classList.remove('show'));
+    document.body.appendChild(banner);
+  }
+  banner.innerHTML = `<small>${heading}</small><strong>${escapeHtml(text)}</strong>`;
+  banner.classList.remove('show');
+  void banner.offsetWidth; // Animation neu starten
+  banner.classList.add('show');
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(() => banner.classList.remove('show'), 8000);
+
+  if (document.hidden || !document.hasFocus()) {
+    clearInterval(titleTimer);
+    let on = false;
+    titleTimer = setInterval(() => {
+      on = !on;
+      document.title = on ? `🎵 ${heading}!` : ORIGINAL_TITLE;
+    }, 1000);
+    if (notifyActive()) {
+      new Notification(heading, { body: text, tag: 'hulaloop-wish' });
+    }
+  }
+}
+
+window.addEventListener('focus', () => {
+  {
+    clearInterval(titleTimer);
+    document.title = ORIGINAL_TITLE;
+  }
+});
+
+// System-Benachrichtigungen: Berechtigung braucht einen direkten Klick (Safari).
+const notifyBtn = document.getElementById('notify-toggle');
+let notifyEnabled = localStorage.getItem('notifyEnabled') !== '0';
+
+function notifyActive() {
+  return notifyEnabled && 'Notification' in window && Notification.permission === 'granted';
+}
+
+function renderNotifyBtn() {
+  if (!('Notification' in window)) {
+    notifyBtn.textContent = 'Mitteilungen: nicht unterstützt';
+  } else if (Notification.permission === 'denied') {
+    notifyBtn.textContent = 'Mitteilungen: blockiert';
+  } else if (Notification.permission === 'default') {
+    notifyBtn.textContent = 'Mitteilungen aktivieren';
+  } else {
+    notifyBtn.textContent = notifyEnabled ? 'Mitteilungen: an' : 'Mitteilungen: aus';
+  }
+}
+
+notifyBtn.addEventListener('click', async () => {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'denied') {
+    alert('Mitteilungen sind blockiert. In Safari: Einstellungen → Websites → Mitteilungen → localhost auf "Erlauben" stellen.');
+    return;
+  }
+  if (Notification.permission === 'default') {
+    await new Promise((resolve) => {
+      const r = Notification.requestPermission(resolve);
+      if (r && r.then) r.then(resolve);
+    });
+    notifyEnabled = true;
+  } else {
+    notifyEnabled = !notifyEnabled;
+  }
+  localStorage.setItem('notifyEnabled', notifyEnabled ? '1' : '0');
+  renderNotifyBtn();
+  if (notifyActive()) {
+    new Notification('Test', { body: 'Mitteilungen sind an.' });
+  }
+});
+renderNotifyBtn();
 
 function playBeep() {
   if (!soundOn) return;

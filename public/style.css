@@ -1066,3 +1066,27 @@ body.dashboard textarea:focus {
 .wifi-row .icon-save svg { width: 26px; height: 26px; }
 
 .wifi-row .icon-save { color: #000; }
+
+/* Dashboard: großes Banner bei neuem Wunsch (auch aus der Ferne sichtbar) */
+#wish-banner {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translate(-50%, -150%);
+  z-index: 1000;
+  max-width: min(92vw, 640px);
+  padding: 16px 28px;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+}
+#wish-banner small { display: block; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.9; }
+#wish-banner strong { display: block; font-size: 1.6rem; line-height: 1.25; }
+#wish-banner.show { opacity: 1; pointer-events: auto; animation: banner-in 0.35s ease-out forwards, banner-pulse 0.8s ease-in-out 0.35s 3; }
+@keyframes banner-in { to { transform: translate(-50%, 0); } }
+@keyframes banner-pulse { 50% { box-shadow: 0 0 0 10px rgba(255, 93, 162, 0.35), 0 8px 32px rgba(0, 0, 0, 0.5); } }
