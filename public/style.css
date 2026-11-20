@@ -3,7 +3,6 @@
   --bg: #f6c934;
   --card: #ffffff;
   --accent: #f6c934;
-  --outline: #f6c934; /* einheitliche Farbe für alle umrandeten Buttons */
   --accent-grad: linear-gradient(135deg, #ffe066 0%, #f6c934 100%);
   --text: #211d12;
   --muted: #756c4e;
@@ -93,8 +92,8 @@ input, textarea {
 }
 
 input:focus, textarea:focus {
-  outline: 2px solid var(--accent);
-  border-color: var(--accent);
+  outline: 2px solid currentColor;
+  border-color: currentColor;
 }
 
 button {
@@ -285,10 +284,10 @@ body.dashboard .hint {
   align-items: flex-start;
   gap: 12px;
   padding: 16px;
-  background: #faf6e8;
+  background: var(--card);
   border-radius: 10px;
 }
-.qr-card h3 { margin: 0; font-size: 1rem; }
+.qr-card h3 { margin: 0; font-size: 1rem; color: var(--text); }
 .qr-card img { background: #fff; border-radius: 6px; }
 .wifi-row { display: flex; gap: 8px; }
 .wifi-row input { flex: 1; min-width: 0; }
@@ -679,18 +678,34 @@ body.dashboard .hint {
   transition: background 0.15s, color 0.15s;
 }
 
-.wish-not-found,
-.wish-played,
-.wish-delete {
-  border: 1px solid var(--outline);
-  color: var(--outline);
+.wish-not-found {
+  border: 1px solid #f6c934;
+  color: #f6c934;
 }
 
 .wish-not-found:hover,
-.wish-not-found.active,
-.wish-played:hover,
+.wish-not-found.active {
+  background: #f6c934;
+  color: #000;
+}
+
+.wish-played {
+  border: 1px solid var(--ok);
+  color: var(--ok);
+}
+
+.wish-played:hover {
+  background: var(--ok);
+  color: #000;
+}
+
+.wish-delete {
+  border: 1px solid var(--err);
+  color: var(--err);
+}
+
 .wish-delete:hover {
-  background: var(--outline);
+  background: var(--err);
   color: #000;
 }
 
@@ -735,18 +750,26 @@ body.dashboard .hint {
 
 .wish-vote:focus-visible,
 .wish-remove-mine:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid currentColor;
   outline-offset: 2px;
 }
 
 /* Klare Farbsprache: grün = abstimmen (nach oben), gelb = Stimme zurückziehen, rot = eigenen Wunsch löschen */
-.wish-vote.plus,
-.wish-vote.minus,
-.wish-remove-mine { border: 1px solid var(--outline); color: var(--outline); }
-.wish-vote.plus:hover,
-.wish-vote.minus:hover,
+.wish-vote.plus { border: 1px solid #3ddc84; color: #3ddc84; }
+.wish-vote.plus:hover {
+  background: #3ddc84;
+  color: #000;
+}
+
+.wish-vote.minus { border: 1px solid var(--err); color: var(--err); }
+.wish-vote.minus:hover {
+  background: var(--err);
+  color: #000;
+}
+
+.wish-remove-mine { border: 1px solid var(--err); color: var(--err); }
 .wish-remove-mine:hover {
-  background: var(--outline);
+  background: var(--err);
   color: #000;
 }
 
@@ -798,15 +821,15 @@ body.dashboard .hint {
   font-weight: 400;
   border-radius: 0.5rem;
   background: transparent;
-  border: 1px solid var(--outline);
-  color: var(--outline);
+  border: 1px solid var(--muted);
+  color: var(--muted);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 #played-more:hover {
-  background: var(--outline);
-  border-color: var(--outline);
+  background: var(--muted);
+  border-color: var(--muted);
   color: #000;
   filter: none;
 }
@@ -832,15 +855,10 @@ body.dashboard .hint {
   transition: background 0.15s, color 0.15s;
 }
 
-.played-actions .link-button {
-  border-color: var(--outline);
-  color: var(--outline);
-}
-
 .played-actions .link-button:hover {
-  background: var(--outline);
+  background: var(--muted);
   color: #000;
-  border-color: var(--outline);
+  border-color: var(--muted);
 }
 
 .danger-button {
@@ -855,13 +873,13 @@ body.dashboard .hint {
   font-weight: 400;
   border-radius: 0.5rem;
   background: transparent;
-  border: 1px solid var(--outline);
-  color: var(--outline);
+  border: 1px solid var(--err);
+  color: var(--err);
   transition: background 0.15s, color 0.15s;
 }
 
 .danger-button:hover {
-  background: var(--outline);
+  background: var(--err);
   color: #000;
 }
 
@@ -882,7 +900,7 @@ body.dashboard .hint {
 .wish-played:focus-visible,
 .wish-delete:focus-visible,
 .wish-vote:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid currentColor;
   outline-offset: 2px;
 }
 
@@ -989,3 +1007,48 @@ body.dashboard .hint {
 }
 .wifi-row .icon-save svg { width: 22px; height: 22px; }
 .qr-card a[href$="svg"], .qr-card a[href*="svg?"] { display: inline-block; line-height: 0; }
+
+/* Fokus-Umrandung generell in der Textfarbe des Elements. Bei gefüllten
+   Buttons hebt sich die Füllfarbe stärker ab als der dunkle Text. */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+#reset-all:focus-visible { outline-color: var(--err); }
+
+/* Zähler-Chip ist gefüllt (schwarzer Text): Fokus-Umrandung in der Füllfarbe,
+   gelb ab 2x, grau bei 1x. */
+.wish-count:focus-visible { outline-color: var(--muted); }
+.wish-count-popular:focus-visible { outline-color: #f6c934; }
+
+/* Dashboard ist dunkel: Eingabefelder schwarz mit weißem Text (vorher hellbeiger
+   Hintergrund mit hellem Text, praktisch unlesbar; BFSG/Kontrast). */
+body.dashboard input,
+body.dashboard textarea {
+  background: #000;
+  color: #fff;
+  border: 1px solid var(--muted);
+}
+body.dashboard input:focus,
+body.dashboard textarea:focus {
+  outline: 2px solid #fff;
+  border-color: #fff;
+}
+
+/* Kleiner QR-Code rechts neben dem Speichern-Icon, Klick = SVG-Download. */
+.wifi-row { align-items: center; }
+.wifi-row #wifi-download { flex: 0 0 auto; display: block; line-height: 0; }
+.wifi-row #wifi-qr { display: block; width: 44px; height: 44px; border-radius: 6px; background: #fff; }
+
+/* SSID-Feld, Speichern-Icon und QR-Code gleich hoch (52px). */
+.wifi-row { align-items: stretch; }
+.wifi-row input,
+.wifi-row .icon-save,
+.wifi-row #wifi-qr { box-sizing: border-box; height: 52px; }
+.wifi-row .icon-save { width: 52px; }
+.wifi-row #wifi-qr { width: 52px; }
+.wifi-row .icon-save svg { width: 26px; height: 26px; }
+
+.wifi-row .icon-save { color: #000; }
