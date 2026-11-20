@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DJ-Dashboard · Songwünsche</title>
-<link rel="stylesheet" href="/static/style.css?v=57">
+<link rel="stylesheet" href="/static/style.css?v=62">
 </head>
 <body class="dashboard">
   <header class="dash-header">
@@ -36,6 +36,33 @@
     <button id="played-more" class="hidden" type="button" title="Weitere gespielte Songs anzeigen">Alle anzeigen</button>
   </section>
 
-  <script src="/static/dashboard.js?v=31"></script>
+  <section class="played-section qr-section">
+    <h2>QR-Codes</h2>
+    <div class="qr-grid">
+      <div class="qr-card qr-card-wifi">
+        <h3>WLAN beitreten</h3>
+        <form id="wifi-form" class="wifi-form" autocomplete="off">
+          <label for="wifi-ssid">WLAN-Name (SSID)</label>
+          <div class="wifi-row">
+            <input type="text" id="wifi-ssid" maxlength="32" required>
+            <button type="submit" class="icon-save" title="WLAN-Namen speichern" aria-label="WLAN-Namen speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l3 3v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M7 3v5h8V3"/><rect x="7" y="13" width="10" height="8"/></svg></button>
+          </div>
+          <p id="wifi-msg" class="hint hidden"></p>
+        </form>
+        <a id="wifi-download" href="/api/dashboard/wifi-qr.svg?download=1" title="WLAN-QR-Code als SVG herunterladen" aria-label="WLAN-QR-Code als SVG herunterladen">
+          <img id="wifi-qr" alt="WLAN-QR-Code – anklicken zum SVG-Download" width="200" height="200">
+        </a>
+      </div>
+      <div class="qr-card">
+        <h3>Songwunsch-Seite</h3>
+        <a href="/api/qr.svg" download="songwunsch-qr.svg" title="QR-Code als SVG herunterladen" aria-label="QR-Code als SVG herunterladen">
+          <img src="/api/qr.svg" alt="QR-Code zur Songwunsch-Seite – anklicken zum SVG-Download" width="200" height="200">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script src="/static/render-gate.js?v=1"></script>
+  <script src="/static/dashboard.js?v=34"></script>
 </body>
 </html>

@@ -113,14 +113,16 @@ function renderWish(wish) {
   const names = requesterLabel(wish);
   const lastMessage = wish.messages[wish.messages.length - 1];
   const count = wish.voters.length;
+  const lastAt = wish.lastRequestedAt && formatDateTime(wish.lastRequestedAt) !== formatDateTime(wish.firstRequestedAt)
+    ? ` · zuletzt erneut ${formatDateTime(wish.lastRequestedAt)}` : '';
   return `
-    <div class="wish-time-divider">${formatDateTime(wish.firstRequestedAt)}</div>
     <li class="wish" data-id="${wish.id}">
       <div class="wish-info">
         <div class="wish-headline">
           ${countChip(count)}
           <span class="wish-main"><strong class="wish-title-text ${wish.notFound ? 'not-found has-tip' : ''}" ${wish.notFound ? 'data-tip="Der Titel wurde leider nicht gefunden"' : ''}>${escapeHtml(wish.title)}</strong></span>
         </div>
+        <span class="wish-requested-at">gewünscht um ${formatDateTime(wish.firstRequestedAt)}${lastAt}</span>
         ${lastMessage ? `<span class="wish-msg">${names ? `<strong>${escapeHtml(names)}:</strong> ` : ''}${escapeHtml(lastMessage.text)}</span>` : ''}
       </div>
       <div class="wish-side wish-actions">
@@ -153,8 +155,11 @@ list.addEventListener('click', async (e) => {
   const playedBtn = e.target.closest('.wish-played');
   if (playedBtn) {
     playedBtn.disabled = true;
+    const id = playedBtn.dataset.id;
+    const title = playedBtn.closest('.wish')?.querySelector('.wish-title-text')?.textContent || 'Song';
     try {
-      await fetch(`/api/wishes/${playedBtn.dataset.id}/played`, { method: 'POST' });
+      const res = await fetch(`/api/wishes/${id}/played`, { method: 'POST' });
+      if (res.ok) showUndoToast(`„${title}“ als gespielt markiert`, id);
     } catch {
       playedBtn.disabled = false;
     }
@@ -235,12 +240,20 @@ function playBeep() {
   osc.stop(ctx.currentTime + 0.4);
 }
 
+function applyWishes(data) {
+  runWhenStable(() => {
+    renderActive(data.active);
+    renderPlayed(data.played);
+    renderPlayedToggle(data.showPlayedToGuests);
+  });
+}
+
+watchInteraction(list);
+watchInteraction(playedList);
+
 async function loadInitial() {
   const res = await fetch('/api/dashboard/wishes');
-  const data = await res.json();
-  renderActive(data.active);
-  renderPlayed(data.played);
-  renderPlayedToggle(data.showPlayedToGuests);
+  applyWishes(await res.json());
 }
 
 let currentWs = null;
@@ -269,11 +282,7 @@ function connect() {
 
   ws.addEventListener('message', (event) => {
     const data = JSON.parse(event.data);
-    if (data.type === 'wishes') {
-      renderActive(data.active);
-      renderPlayed(data.played);
-      renderPlayedToggle(data.showPlayedToGuests);
-    }
+    if (data.type === 'wishes') applyWishes(data);
   });
 
   ws.addEventListener('close', () => {
@@ -287,8 +296,64 @@ function connect() {
   currentWs = ws;
 }
 
+const wifiForm = document.getElementById('wifi-form');
+const wifiInput = document.getElementById('wifi-ssid');
+const wifiMsg = document.getElementById('wifi-msg');
+
+function refreshWifiQr() {
+  document.getElementById('wifi-qr').src = `/api/dashboard/wifi-qr.svg?t=${Date.now()}`;
+}
+
+async function loadWifi() {
+  try {
+    const res = await fetch('/api/dashboard/wifi');
+    if (!res.ok) return;
+    wifiInput.value = (await res.json()).ssid;
+    refreshWifiQr();
+  } catch (err) { /* offline: später erneut */ }
+}
+
+wifiForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const res = await fetch('/api/dashboard/wifi', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ssid: wifiInput.value })
+  });
+  const data = await res.json();
+  wifiMsg.textContent = res.ok ? 'Gespeichert.' : data.error;
+  wifiMsg.classList.remove('hidden');
+  if (res.ok) {
+    wifiInput.value = data.ssid;
+    refreshWifiQr();
+  }
+});
+
+loadWifi();
 loadInitial();
 connect();
 
 // Sicherheitsnetz: unabhängig vom WebSocket-Status regelmäßig neu laden.
 setInterval(loadInitial, 10000);
+
+// Kurzer Hinweis mit "Rückgängig" nach "gespielt" (fängt Fehlklicks ab).
+let toastTimer = null;
+function showUndoToast(text, id) {
+  let toast = document.getElementById('undo-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'undo-toast';
+    toast.className = 'undo-toast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = '<span class="undo-text"></span><button type="button" class="undo-btn">Rückgängig</button>';
+  toast.querySelector('.undo-text').textContent = text;
+  toast.classList.remove('hidden');
+  toast.querySelector('.undo-btn').addEventListener('click', async () => {
+    toast.classList.add('hidden');
+    await fetch(`/api/wishes/${id}/unplayed`, { method: 'POST' });
+    loadInitial();
+  });
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.add('hidden'), 8000);
+}

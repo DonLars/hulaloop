@@ -126,6 +126,8 @@ function sortedActiveWishes() {
   return wishes
     .filter((w) => !w.played)
     .sort((a, b) => {
+      // Nicht gefundene Songs wandern ganz ans Ende der Liste.
+      if (a.notFound !== b.notFound) return a.notFound ? 1 : -1;
       if (b.voters.length !== a.voters.length) return b.voters.length - a.voters.length;
       return new Date(a.firstRequestedAt) - new Date(b.firstRequestedAt);
     });
@@ -294,9 +296,7 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', page));
 });
 
-// QR-Code zur Songwunsch-Seite (öffentlich, steht auf der Songwunsch-Seite
-// selbst, damit Gäste von einem gemeinsamen Bildschirm/Tablet aus schnell auf
-// ihr eigenes Handy wechseln können). Nutzt den Host, über den die Seite
+// QR-Code zur Songwunsch-Seite (wird im DJ-Dashboard angezeigt). Nutzt den Host, über den die Seite
 // gerade aufgerufen wurde (funktioniert automatisch mit der jeweiligen
 // Party-IP/Port, ganz ohne Internet).
 // Findet eine echte LAN-IPv4-Adresse (z.B. 192.168.x.x), falls die Anfrage
@@ -331,18 +331,40 @@ app.get('/api/qr.svg', async (req, res) => {
 });
 
 // WLAN-QR-Code zum automatischen Beitritt (offenes Netz ohne Passwort).
-// SSID über WIFI_SSID setzen, muss exakt dem Namen im Router entsprechen.
-const WIFI_SSID = process.env.WIFI_SSID || 'Musikwunsch';
+// SSID wird im Dashboard festgelegt (gespeichert in settings.json); WIFI_SSID
+// dient nur als Startwert. Muss exakt dem Namen im Router entsprechen.
+if (typeof settings.wifiSsid !== 'string' || !settings.wifiSsid.trim()) {
+  settings.wifiSsid = process.env.WIFI_SSID || 'Musikwunsch';
+}
 
 function wifiQrPayload(ssid) {
   const escaped = ssid.replace(/([\\;,:"])/g, '\\$1');
   return `WIFI:T:nopass;S:${escaped};;`;
 }
 
-app.get('/api/wifi-qr.svg', async (req, res) => {
+app.get('/api/dashboard/wifi', requireDashboardAuth, (req, res) => {
+  res.json({ ssid: settings.wifiSsid });
+});
+
+app.post('/api/dashboard/wifi', requireDashboardAuth, (req, res) => {
+  const ssid = String(req.body.ssid || '').trim();
+  if (!ssid || ssid.length > 32) {
+    return res.status(400).json({ error: 'Der WLAN-Name muss 1 bis 32 Zeichen lang sein.' });
+  }
+  settings.wifiSsid = ssid;
+  saveSettings();
+  res.json({ ssid });
+});
+
+app.get('/api/dashboard/wifi-qr.svg', requireDashboardAuth, async (req, res) => {
   try {
-    const svg = await QRCode.toString(wifiQrPayload(WIFI_SSID), { type: 'svg', margin: 2, width: 400 });
+    const svg = await QRCode.toString(wifiQrPayload(settings.wifiSsid), { type: 'svg', margin: 2, width: 400 });
     res.set('Content-Type', 'image/svg+xml');
+    res.set('Cache-Control', 'no-store');
+    if (req.query.download) {
+      const safeName = settings.wifiSsid.replace(/[^\w.-]+/g, '_');
+      res.set('Content-Disposition', `attachment; filename="wlan-qr-${safeName}.svg"`);
+    }
     res.send(svg);
   } catch (err) {
     res.status(500).send('QR-Code konnte nicht erzeugt werden.');
@@ -534,6 +556,19 @@ app.post('/api/wishes/:id/played', requireDashboardAuth, (req, res) => {
   }
   wish.played = true;
   wish.playedAt = new Date().toISOString();
+  saveWishes();
+  broadcastWishes();
+  res.status(200).json(wish);
+});
+
+// Macht "gespielt" rückgängig (z.B. nach einem Fehlklick im Dashboard).
+app.post('/api/wishes/:id/unplayed', requireDashboardAuth, (req, res) => {
+  const wish = wishes.find((w) => w.id === req.params.id);
+  if (!wish) {
+    return res.status(404).json({ error: 'Wunsch nicht gefunden.' });
+  }
+  wish.played = false;
+  wish.playedAt = null;
   saveWishes();
   broadcastWishes();
   res.status(200).json(wish);

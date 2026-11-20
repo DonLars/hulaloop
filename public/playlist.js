@@ -72,8 +72,10 @@ function formatDateTime(iso) {
 
 function renderWish(wish) {
   const voteTitle = wish.votedByMe ? 'Stimme zurückziehen' : 'Nach oben schieben';
-  const action = wish.isMine
-    ? `<button class="wish-remove-mine" data-id="${wish.id}" title="Deinen Wunsch zurückziehen" aria-label="Deinen Wunsch zurückziehen"><span class="btn-icon">X</span>${CLOSE_SVG}</button>`
+  const action = wish.notFound
+    ? `<button type="button" class="wish-notfound-hint has-tip" data-tip="Der Titel wurde leider nicht gefunden" title="Warum ist dieser Wunsch durchgestrichen?" aria-label="Der Titel wurde leider nicht gefunden">?</button>`
+    : wish.isMine
+    ? `<button class="wish-remove-mine" data-id="${wish.id}" title="Deinen Wunsch zurückziehen" aria-label="Deinen Wunsch zurückziehen"><span class="btn-icon">X</span>${CLOSE_SVG}<span class="btn-confirm">Wirklich löschen?</span></button>`
     : `<button class="wish-vote ${wish.votedByMe ? 'minus' : 'plus'}" data-id="${wish.id}" title="${voteTitle}" aria-label="${voteTitle}"><span class="btn-icon">${wish.votedByMe ? '−' : '+'}</span>${wish.votedByMe ? THUMB_DOWN_SVG : THUMB_UP_SVG} <span class="btn-label">${wish.votedByMe ? 'zurücknehmen' : 'abstimmen'}</span></button>`;
   return `
     <li class="wish" data-id="${wish.id}">
@@ -82,8 +84,9 @@ function renderWish(wish) {
           ${countChip(wish.count)}
           <span class="wish-main"><span class="wish-title-text ${wish.notFound ? 'not-found has-tip' : ''}" ${wish.notFound ? 'data-tip="Der Titel wurde leider nicht gefunden"' : ''}>${escapeHtml(wish.title)}</span></span>
         </div>
+        <span class="wish-requested-at">gewünscht um ${formatDateTime(wish.firstRequestedAt)}</span>
       </div>
-      <div class="wish-side ${wish.isMine ? 'wish-side-remove' : 'wish-side-vote'}">${action}</div>
+      <div class="wish-side ${wish.notFound ? 'wish-side-notfound' : wish.isMine ? 'wish-side-remove' : 'wish-side-vote'}">${action}</div>
     </li>
   `;
 }
@@ -104,6 +107,17 @@ list.addEventListener('click', async (e) => {
 
   const removeBtn = e.target.closest('.wish-remove-mine');
   if (removeBtn) {
+    // Zweistufig: erster Tipp scharf schalten, zweiter Tipp löscht wirklich.
+    if (!removeBtn.classList.contains('armed')) {
+      removeBtn.classList.add('armed');
+      holdRendering(3000);
+      removeBtn.setAttribute('aria-label', 'Zum Löschen nochmal tippen');
+      setTimeout(() => {
+        removeBtn.classList.remove('armed');
+        removeBtn.setAttribute('aria-label', 'Deinen Wunsch zurückziehen');
+      }, 3000);
+      return;
+    }
     removeBtn.disabled = true;
     try {
       const res = await fetch(`/api/wishes/${removeBtn.dataset.id}/mine`, { method: 'DELETE' });
@@ -187,11 +201,18 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function applyWishes(data) {
+  runWhenStable(() => {
+    renderList(data.wishes);
+    renderPlayedList(data.played, data.showPlayedToGuests);
+  });
+}
+
+watchInteraction(list);
+
 async function loadInitial() {
   const res = await fetch('/api/wishes');
-  const data = await res.json();
-  renderList(data.wishes);
-  renderPlayedList(data.played, data.showPlayedToGuests);
+  applyWishes(await res.json());
 }
 
 let currentWs = null;
@@ -219,10 +240,7 @@ function connect() {
 
   ws.addEventListener('message', (event) => {
     const data = JSON.parse(event.data);
-    if (data.type === 'wishes') {
-      renderList(data.wishes);
-      renderPlayedList(data.played, data.showPlayedToGuests);
-    }
+    if (data.type === 'wishes') applyWishes(data);
   });
 
   ws.addEventListener('close', () => {

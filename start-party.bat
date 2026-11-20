@@ -5,7 +5,7 @@ REM Vor der ersten Party unbedingt anpassen (nicht die Standardwerte
 REM hulaloop/hulaloop fuer den echten Partybetrieb verwenden):
 set DASHBOARD_USERNAME=change-me
 set DASHBOARD_PASSWORD=change-me
-REM WLAN-Name (SSID) des Routers, muss exakt stimmen (QR-Code unter /api/wifi-qr.svg):
+REM Startwert für den WLAN-Namen (SSID); im Dashboard änderbar, dort gibt es auch den QR-Code:
 set WIFI_SSID=Musikwunsch
 
 REM Nur aktivieren, falls der automatische Standardpfad (macOS) auf diesem
